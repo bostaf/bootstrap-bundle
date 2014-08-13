@@ -283,6 +283,8 @@
             <div class="checkbox">{{ checkboxdata|raw }}</div>
         {% endif %}
 
+        {{ block('form_help') }}
+
         {% if align_with_widget is defined or attr.align_with_widget is defined %}
             </div>
             </div>
@@ -350,6 +352,7 @@
             <div class="radio">{{ radiodata|raw }}</div>
         {% endif %}
 
+        {{ block('form_help') }}
 
         {% if align_with_widget is defined or attr.align_with_widget is defined %}
             </div>
@@ -596,6 +599,9 @@
         {% endif %}
         {% if attr.widget_col is defined and attr.widget_col is not empty %}
             {% set widget_col = attr.widget_col %}
+            {% if label is sameas(false) and label_col is defined %}
+                {% set widget_col = widget_col + label_col %}
+            {% endif %}
         {% endif %}
         {% if attr.col_size is defined and attr.col_size is not empty %}
             {% set col_size = attr.col_size %}
@@ -736,7 +742,7 @@
         {% endif %}
 
         {% if form.vars.errors|length > 0 %}
-            {% set attr = attr|merge({ 'class': (attr.class|default('') ~ ' has-error')|trim }) %}
+            {% set attr = attr|merge({ 'class': (attr.class|default('') ~ ' has-global-errors')|trim }) %}
         {% endif %}
 
         {% if col_size is defined %}
@@ -874,7 +880,7 @@
 {% block widget_container_attributes %}
     {% spaceless %}
         {% if attr.style is defined and (attr.style == 'inline' or attr.style == 'horizontal') %}
-            {% set attr = attr|merge({ 'class': 'form-'~attr.style~attr.class|default('') }) %}
+            {% set attr = attr|merge({ 'class': ('form-'~attr.style~' '~attr.class|default(''))|trim }) %}
             {% set attr = attr|merge({ 'style': null }) %}
         {% endif %}
         {% if id is not empty %}id="{{ id }}" {% endif %}
